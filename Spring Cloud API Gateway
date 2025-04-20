@@ -1,1 +1,151 @@
 
+What is Spring Cloud API Gateway?
+
+If you are aware of a microservices architecture, then there we have several spring boot applications
+(microservices) running on different ports or routes. An API gateway acts as a single point of entry for a collection 
+of microservices. In simple words, all microservices can be accessed through a single port or route. It is a non-blocking
+and reactive gateway that provides several features like routing, filtering, load balancing, circuit breaking, and more. In this
+article first, we’ll look at the spring cloud gateway architecture and then implement it.
+
+
+✅ It is a single entry point for all your microservices.
+✅ It handles:
+
+Routing requests (send to correct microservice)
+
+Load balancing
+
+Authentication, Authorization
+
+Logging, Monitoring
+
+Request/Response transformations
+
+In short — it is like a security guard + traffic controller for your microservices.
+
+
+⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐
+
+Basic Architecture
+
+Client (Browser, App)
+   ↓
+API Gateway (Spring Cloud Gateway)
+   ↓
+Microservices (user-service, buy-service, payment-service, etc.)
+✅ Clients never talk directly to microservices.
+✅ Gateway decides which service should handle the request.
+
+
+
+⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐
+
+Spring Cloud Gateway Implementation
+There are two ways to create an API gateway.
+
+(1) Programmatic configuration: Here we create Spring Cloud Gateway as Java bean. The routes, predicates, and all are created as a traditional Java program.
+(2) Property configuration: Here, we create components of Spring Cloud Gateway as properties in the application.properties or application.yml file.
+
+
+⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐
+1. Property-based Configuration (Most common, simple)
+👉 You define everything inside application.properties or application.yml.
+👉 No Java code for routes — just configurations.
+
+
+✅ Example in application.yml:
+
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      routes:
+        - id: user-service
+          uri: lb://user-service
+          predicates:
+            - Path=/users/**
+        - id: buy-service
+          uri: lb://buy-service
+          predicates:
+            - Path=/buy/**
+        - id: payment-service
+          uri: lb://payment-service
+          predicates:
+            - Path=/payment/**
+
+✅ Example in application.properties:
+
+server.port=8080
+spring.application.name=api-gateway
+
+spring.cloud.gateway.routes[0].id=user-service
+spring.cloud.gateway.routes[0].uri=lb://user-service
+spring.cloud.gateway.routes[0].predicates[0]=Path=/users/**
+
+spring.cloud.gateway.routes[1].id=buy-service
+spring.cloud.gateway.routes[1].uri=lb://buy-service
+spring.cloud.gateway.routes[1].predicates[0]=Path=/buy/**
+
+spring.cloud.gateway.routes[2].id=payment-service
+spring.cloud.gateway.routes[2].uri=lb://payment-service
+spring.cloud.gateway.routes[2].predicates[0]=Path=/payment/**
+✅ Here you don't need any extra Java class for routing.
+✅ Spring Boot automatically reads and sets up everything at startup.
+
+
+⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐
+
+🛠 2. Programmatic (Java Bean) Configuration
+👉 You create a Java class (typically annotated with @Configuration) and build routes using Java code.
+
+✅ Example:
+
+@Configuration
+public class GatewayConfig {
+
+    @Bean
+    public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
+        return builder.routes()
+            .route("user-service", r -> r.path("/users/**")
+                .uri("lb://user-service"))
+            .route("buy-service", r -> r.path("/buy/**")
+                .uri("lb://buy-service"))
+            .route("payment-service", r -> r.path("/payment/**")
+                .uri("lb://payment-service"))
+            .build();
+    }
+}
+
+
+          ✅✅✅✅✅✅✅✅✅✅✅✅ OR ✅✅✅✅✅✅✅✅✅✅✅✅✅
+
+
+import org.springframework.boot.SpringApplication; 
+import org.springframework.boot.autoconfigure.SpringBootApplication; 
+import org.springframework.cloud.gateway.route.RouteLocator; 
+import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder; 
+import org.springframework.context.annotation.Bean; 
+
+@SpringBootApplication
+public class GatewayApplication { 
+
+	public static void main(String[] args) { 
+		SpringApplication.run(GatewayApplication.class, args); 
+	} 
+
+	@Bean
+	public RouteLocator routerBuilder(RouteLocatorBuilder routeLocatorBuilder){ 
+		return routeLocatorBuilder.routes() 
+						.route("Microservice1",r->r.path("/serviceA/**") 
+								.uri("http://localhost:8081/")) 
+						.route("Microservice2",r->r.path("/serviceB/**") 
+								.uri("http://localhost:8082/")).build(); 
+	} 
+} 
+
+✅ Here you manually build routes using the RouteLocatorBuilder.
+✅ This method gives you full control (for dynamic routes, conditional routing, custom filters, etc.)
