@@ -37,13 +37,13 @@ Filters (optional) → Modify the request/response along the way
 Predicates = Conditions to match the request.
 
 
-Predicate                        	Example                        	Meaning
-Path                        	/users/**                          	Match URL pattern
-Method                       	GET, POST                          	Match HTTP method
-Host	                        **.example.com	                    Match domain
-Header                      	X-Request-Id exists                	Match if header exists
-Query	                        ?param=value                      	Match query param
-Cookie                       	SESSION=abc                        	Match cookie
+Predicate                        	Example                             	Meaning
+Path                        	     /users/**                           	Match URL pattern
+Method                           	GET, POST                           	Match HTTP method
+Host	                             **.example.com	                      Match domain
+Header                           	X-Request-Id exists                	 Match if header exists
+Query	                            ?param=value                        	Match query param
+Cookie                           	SESSION=abc                         	Match cookie
 
 
 ⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐
