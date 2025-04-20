@@ -1,0 +1,260 @@
+👉User Service, Buy Service, and Payment Service,
+👉 All registered with Eureka Server,
+👉 With proper functioning code for basic working APIs.
+
+⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐
+
+
+🏗 Final Setup Structure
+
+eureka-server/
+user-service/
+buy-service/
+payment-service/
+
+⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐
+
+
+📦 Full Folder Structure Example
+
+/eureka-server
+    /src/main/java
+        /EurekaServerApplication.java
+    /src/main/resources
+        application.properties
+
+/user-service
+    /src/main/java
+        /controller/UserController.java
+        /UserServiceApplication.java
+    /src/main/resources
+        application.properties
+
+/buy-service
+    /src/main/java
+        /controller/BuyController.java
+        /BuyServiceApplication.java
+    /src/main/resources
+        application.properties
+
+/payment-service
+    /src/main/java
+        /controller/PaymentController.java
+        /PaymentServiceApplication.java
+    /src/main/resources
+        application.properties
+
+⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐
+
+1. 🌐 Eureka Server
+eureka-server
+
+
+
+✅ pom.xml dependencies
+
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-netflix-eureka-server</artifactId>
+</dependency>
+
+
+
+✅ Main Class
+
+@SpringBootApplication
+@EnableEurekaServer
+public class EurekaServerApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(EurekaServerApplication.class, args);
+    }
+}
+
+
+
+✅ application.properties
+
+server.port=8761
+spring.application.name=eureka-server
+
+eureka.client.register-with-eureka=false
+eureka.client.fetch-registry=false
+
+
+✅ Run EurekaServerApplication
+Access Eureka Dashboard: http://localhost:8761/
+
+
+⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐
+2. 👤 User Service
+user-service
+
+✅ pom.xml dependencies
+
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+</dependency>
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-web</artifactId>
+</dependency>
+
+
+
+✅ Main Class
+
+@SpringBootApplication
+@EnableEurekaClient
+public class UserServiceApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(UserServiceApplication.class, args);
+    }
+}
+
+
+
+✅ application.properties
+
+server.port=8081
+spring.application.name=user-service
+eureka.client.service-url.defaultZone=http://localhost:8761/eureka
+
+
+
+✅ UserController.java
+
+@RestController
+@RequestMapping("/users")
+public class UserController {
+
+    @GetMapping("/{id}")
+    public String getUser(@PathVariable String id) {
+        return "User details for user ID: " + id;
+    }
+}
+
+
+⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐
+
+3. 🛒 Buy Service
+buy-service
+
+✅ pom.xml dependencies
+
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+</dependency>
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-web</artifactId>
+</dependency>
+
+
+✅ Main Class
+
+@SpringBootApplication
+@EnableEurekaClient
+public class BuyServiceApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(BuyServiceApplication.class, args);
+    }
+}
+
+
+✅ application.properties
+
+properties
+Copy
+Edit
+server.port=8082
+spring.application.name=buy-service
+
+eureka.client.service-url.defaultZone=http://localhost:8761/eureka
+
+
+
+✅ BuyController.java
+
+@RestController
+@RequestMapping("/buy")
+public class BuyController {
+
+    @GetMapping("/product/{id}")
+    public String buyProduct(@PathVariable String id) {
+        return "Product with ID " + id + " bought successfully!";
+    }
+}
+
+
+⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐
+4. 💳 Payment Service
+payment-service
+
+✅ pom.xml dependencies
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+</dependency>
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-web</artifactId>
+</dependency>
+
+
+✅ Main Class
+
+@SpringBootApplication
+@EnableEurekaClient
+public class PaymentServiceApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(PaymentServiceApplication.class, args);
+    }
+}
+
+
+
+✅ application.properties
+
+server.port=8083
+spring.application.name=payment-service
+
+eureka.client.service-url.defaultZone=http://localhost:8761/eureka
+
+
+
+✅ PaymentController.java
+
+@RestController
+@RequestMapping("/payment")
+public class PaymentController {
+
+    @PostMapping("/pay")
+    public String makePayment(@RequestParam double amount) {
+        return "Payment of $" + amount + " completed successfully!";
+    }
+}
+
+
+⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐
+
+
+🔥 How to Run Everything
+Start eureka-server first (port 8761)
+
+Start user-service (port 8081)
+
+Start buy-service (port 8082)
+
+Start payment-service (port 8083)
+
+Go to http://localhost:8761/ and check — all services listed 🎯
+
+Now you can hit APIs like:
+
+http://localhost:8081/users/1
+
+http://localhost:8082/buy/product/10
+
+http://localhost:8083/payment/pay?amount=500
