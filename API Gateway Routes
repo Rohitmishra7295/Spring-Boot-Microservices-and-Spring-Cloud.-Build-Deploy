@@ -1,0 +1,79 @@
+📖 What are API Gateway Routes?
+👉 Routes are rules inside the API Gateway that tell:
+
+WHEN a request should be handled (based on Path, Host, Method, etc.)
+
+WHERE the request should be forwarded (to which service).
+
+You can think of a route like this:
+
+"If a request URL matches /users/**, then send it to User Service"
+
+Each Route typically has:
+
+ID → Name of the route
+
+Predicate → Condition to match (e.g., URL path, method, header)
+
+URI → Target where request will be forwarded
+
+Filters (optional) → Modify the request/response along the way
+
+⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐
+
+ Basic Example
+.route("user-service", r -> r
+    .path("/users/**")
+    .uri("lb://USER-SERVICE"))
+✅ Route ID = user-service
+✅ If the request path matches /users/**, forward it to the service registered in Eureka as USER-SERVICE.
+
+
+
+
+⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐
+
+ What Predicates Can You Use?
+Predicates = Conditions to match the request.
+
+
+Predicate                        	Example                        	Meaning
+Path                        	/users/**                          	Match URL pattern
+Method                       	GET, POST                          	Match HTTP method
+Host	                        **.example.com	                    Match domain
+Header                      	X-Request-Id exists                	Match if header exists
+Query	                        ?param=value                      	Match query param
+Cookie                       	SESSION=abc                        	Match cookie
+
+
+⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐
+Example multiple predicates:
+
+.route("special", r -> r
+    .path("/special/**")
+    .and()
+    .method(HttpMethod.GET)
+    .uri("lb://SPECIAL-SERVICE"))
+✅ Only forward if path is /special/** AND method is GET.
+
+
+⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐
+🛠 Full Programmatic Example
+@Configuration
+public class ApiGatewayRoutes {
+
+    @Bean
+    public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
+        return builder.routes()
+            .route("user-service", r -> r
+                .path("/users/**")
+                .uri("lb://USER-SERVICE"))
+            .route("order-service", r -> r
+                .path("/orders/**")
+                .uri("lb://ORDER-SERVICE"))
+            .route("payment-service", r -> r
+                .path("/payments/**")
+                .uri("lb://PAYMENT-SERVICE"))
+            .build();
+    }
+}
